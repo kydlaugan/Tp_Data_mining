@@ -8,10 +8,9 @@
 #
 
 library(shiny)
-
+library(ggplot2) 
 #chargement de l'interface
-source("ui.R") 
-
+source("ui.R")  
 #chargement du server
 source("server.R")
 
