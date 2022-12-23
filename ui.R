@@ -40,6 +40,13 @@ ui <- fluidPage(
   ),
   
   # Create a new row for the table.
-  DT::dataTableOutput("table")
+  DT::dataTableOutput("table") ,
+  #tags$script(src = "https://cdn.tailwindcss.com"),
+  use_tailwind(),
+  tags$div(
+    "I am a rounded box!", 
+    class = "rounded bg-gray-300 w-64 p-2.5 m-2.5"
+  ),
+  tags$button(class="rounded-full bg-gray-300 " ,"Save Changes")
   
 )

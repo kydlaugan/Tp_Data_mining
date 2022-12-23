@@ -9,6 +9,7 @@
 
 library(shiny)
 library(ggplot2) 
+library(shiny.tailwind)
 #chargement de l'interface
 source("ui.R")  
 #chargement du server
