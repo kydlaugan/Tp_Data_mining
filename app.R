@@ -17,26 +17,28 @@ ui <- dashboardPage(
     sidebarMenu(
       menuItem("Analyse descriptive", tabName = "Analyse descriptive", icon = icon("dashboard"),
                menuSubItem("Histogrammes des attributs",tabName = "hist"),
-               menuSubItem("Summary",tabName = "sum")
-               ),
-      menuItem("Widgets", tabName = "widgets" , icon = icon("car"))
+               menuSubItem("Summary",tabName = "sum"),
+               menuSubItem("Distribution",tabName = "dis")
+               )
     )
   ),
   dashboardBody( 
     tabItems(
       tabItem("Analyse descriptive",h1("Analyse statistique")),
       tabItem("hist",h1("Histogrammes des attributs"),
-              box(plotOutput("hist") ),
-              box(selectInput("features","Histogrammes des variables:",c("laufkont","laufzeit","moral","verw","hoehe")))
+              box(selectInput("features","Histogrammes des variables:",c("laufkont","laufzeit","moral","verw","hoehe"),width = 300),width = 4),
+              box(plotOutput("hist") )
       ),
       tabItem("sum",h1(" Vue sommaire des onnées "),
+        p(strong("Chaque Attribut est representé respectivement par son minimum , son premier quartile, la médiane la moyenne ,le troisieme quartile ,et le maximum  "), .noWS = NULL, .renderHook = NULL),
         verbatimTextOutput("donne")
       ),
-      tabItem("widgets",
-              fluidPage(
-                h1("Jeu de données"),
-                dataTableOutput("jeu")
-              )
+      tabItem("dis",h1("Boite a moustache de chaque attribut"),
+              box(selectInput("feature","Boite a moustache:",c("laufkont","laufzeit","moral","verw","hoehe"),width = 300),width = 4),
+              box(plotOutput("dis") ),
+              strong("Les deux traits horizontaux de la boite
+sont le 1er et le 3e quartiles de l'attribut choisi"),
+              strong("Le trait fort est la médiane de l'attribut choisi ")
       )
   )  
 ))
@@ -45,7 +47,10 @@ ui <- dashboardPage(
 server <- function(input, output) {
 
     output$hist <- renderPlot({
-    plot(dat[[input$features]],xlab=dat[[input$features]])
+    plot(dat[[input$features]],xlab=input$features)
+    })
+    output$dis <- renderPlot({
+      boxplot(dat[[input$feature]])
     })
     output$donne <- renderPrint({
       summary(dat)
