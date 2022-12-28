@@ -1,8 +1,20 @@
+server <- function(input , output){
+    #presentation de la banque
+    output$test1 <- renderImage({
+        list(src = "image/bank2.png",
+           width = "100%",
+           height = 500)
 
-# Define server logic required to draw a histogram
-server <- function(input, output) {
- #useShinyjs(html = TRUE)
-    
+    }, deleteFile = F)
+
+    output$test2 <- renderImage({
+        list(src = "image/bank3.png",
+           width = "100%",
+           height = 500)
+
+    }, deleteFile = F)
+
+    #affichage des données
     # Filter data based on selections
     output$table <- DT::renderDataTable(DT::datatable({
       data <- read.table("Data_set/SouthGermanCredit/SouthGermanCredit.asc", header=TRUE)
@@ -31,24 +43,5 @@ server <- function(input, output) {
       data
     })) 
     
-    #Presentation de la banque
-    output$test1 <- renderImage({
-      
-      list(src = "image/bank2.png",
-           width = "100%",
-           height = 500)
-      
-    }, deleteFile = F) 
-    output$test2 <- renderImage({
-      
-      list(src = "image/bank3.png",
-           width = "100%",
-           height = 500)
-      
-    }, deleteFile = F) 
 
-
-
-    
 }
-

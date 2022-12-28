@@ -94,8 +94,10 @@ ui <- dashboardPage(
     
     #contenu second_menu
     tabItem(tabName = "widgets",
-            
-            fluidPage (
+
+         card(
+  height = 150, full_screen = TRUE,
+    fluidPage (
               # Application title
               titlePanel("Affichage des données "),
               
@@ -122,9 +124,14 @@ ui <- dashboardPage(
                 )
               ),
             ),
-            DT::dataTableOutput("table")
+            DT::dataTableOutput("table"),
+)
+            
+          
+
+            
       
      )
-    )
+    ) 
   )
   ) 

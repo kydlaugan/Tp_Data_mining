@@ -10,11 +10,12 @@
 library(shiny)
 library(ggplot2) 
 library(shinydashboard)
+library(bslib)
 #library(shiny.tailwind)
 #chargement de l'interface
-source("ui.R")  
+source("ui/final_ui.R")  
 #chargement du server
-source("server.R")
+source("server/final_server.R")
 
 # Run the application 
 shinyApp(ui = ui, server = server)
