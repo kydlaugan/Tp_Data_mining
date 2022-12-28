@@ -28,7 +28,23 @@ server <- function(input, output) {
       }
       
       data
-    }))
+    })) 
+    
+    #Presentation de la banque
+    output$test1 <- renderImage({
+      
+      list(src = "image/bank2.png",
+           width = "100%",
+           height = 500)
+      
+    }, deleteFile = F) 
+    output$test2 <- renderImage({
+      
+      list(src = "image/bank3.png",
+           width = "100%",
+           height = 500)
+      
+    }, deleteFile = F) 
     
 }
 
