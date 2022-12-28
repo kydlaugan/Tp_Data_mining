@@ -1,16 +1,17 @@
-
-#chargement des données
 data <- read.table("Data_set/SouthGermanCredit/SouthGermanCredit.asc", header=TRUE)
-#renommage des colonnes
-nom_colonne <- c("status", "duration", "credit_history", "purpose", "amount", 
-                 "savings", "employment_duration", "installment_rate",
-                 "personal_status_sex", "other_debtors",
-                 "present_residence", "property",
-                 "age", "other_installment_plans",
-                 "housing", "number_credits",
-                 "job", "people_liable", "telephone", "foreign_worker",
-                 "credit_risk")
-names(data) <- nom_colonne 
+      
+      #renommage des colonnes
+      nom_colonne <- c("status", "duration", "credit_history", "purpose", "amount", 
+                      "savings", "employment_duration", "installment_rate",
+                      "personal_status_sex", "other_debtors",
+                      "present_residence", "property",
+                      "age", "other_installment_plans",
+                      "housing", "number_credits",
+                      "job", "people_liable", "telephone", "foreign_worker",
+                      "credit_risk")
+      names(data) <- nom_colonne
+      
+#chargement des données
 
 #menu du tableau de bord
 menu <- dashboardSidebar(
@@ -69,45 +70,25 @@ menu <- dashboardSidebar(
                        selectInput("dur",
                                    "Duration:",
                                    c("All",
-                                     unique(as.character(data$duration))))
+                                     unique(as.character(dat$duration))))
                 ),
                 column(4,
                        selectInput("amo",
                                    "Amount:",
                                    c("All",
-                                     unique(as.character(data$amount))))
+                                     unique(as.character(dat$amount))))
                 ),
                 column(4,
                        selectInput("ag",
                                    "Age:",
                                    c("All",
-                                     unique(as.character(data$age))))
+                                     unique(as.character(dat$age))))
                 )
               ),
             DT::dataTableOutput("table"),
             ),
             nav(
                 "Données_nommées", 
-                fluidRow(
-                column(4,
-                       selectInput("dur",
-                                   "Duration:",
-                                   c("All",
-                                     unique(as.character(data$duration))))
-                ),
-                column(4,
-                       selectInput("amo",
-                                   "Amount:",
-                                   c("All",
-                                     unique(as.character(data$amount))))
-                ),
-                column(4,
-                       selectInput("ag",
-                                   "Age:",
-                                   c("All",
-                                     unique(as.character(data$age))))
-                )
-              ),
             DT::dataTableOutput("tables"),
             )
             )
