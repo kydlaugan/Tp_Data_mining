@@ -17,7 +17,9 @@ data <- read.table("Data_set/SouthGermanCredit/SouthGermanCredit.asc", header=TR
 menu <- dashboardSidebar(
     sidebarMenu(
         menuItem("SouthGermanCredit", tabName = "SouthBank", icon = icon("building-columns" , "fa-2x")),
-        menuItem("Data_set", tabName = "widgets", icon = icon("th"))
+        menuItem("Data_set", tabName = "widgets", icon = icon("th")),
+        menuItem("Valeurs_manquantes", tabName = "NA", icon = icon("th"))
+
     )
 )
 
@@ -189,10 +191,29 @@ menu <- dashboardSidebar(
 
                     )
                 ),
-           
-            box(DT::dataTableOutput("table17" , height="300")),
+                fluidRow(
+                    column(
+                        12,
+                        box(DT::dataTableOutput("table17" , height="300") , width= 10000),
+
+                    )
+                ) ,
+            tags$p( class="fs-3" ,"Au vu de toutes ces relations , nous pouvons conclure que nous pouvons nous passer de  l'attribut",
+              tags$strong("people_liable") ,"parceque peu importe le nombre d'individu qui depandent du débiteur , les chances qu'il soit crédible ou pas sont  quasi-égales !"
             )
             )
+            )
+        ),
+        #debut du troièmes items
+        tabItem(tabName="NA" ,
+            card(
+                 DT::dataTableOutput("val_na") 
+            ),
+                tags$p("Nous relevons de ce tableau qu'il y a" , 
+                 tags$strong("aucune valeurs maquantes donc 0 N/A")
+                
+                )
+
         )
 
     )

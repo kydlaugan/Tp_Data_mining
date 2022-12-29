@@ -11,6 +11,7 @@ library(shiny)
 library(ggplot2) 
 library(shinydashboard)
 library(bslib)
+
 #library(shiny.tailwind)
 #chargement de l'interface
 source("ui/final_ui.R")  

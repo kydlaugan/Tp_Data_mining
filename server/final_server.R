@@ -230,6 +230,17 @@ output$table16<- DT::renderDataTable(DT::datatable({
 output$table17<- DT::renderDataTable(DT::datatable({
         tabs$foreign_worker
     })) 
+# affichage des valeurs manquantes
+Valeurs_manquantes <- is.na(data)
+output$val_na<- DT::renderDataTable(DT::datatable({
+        Valeurs_manquantes
+    })) 
+
+   output$attr1 <- renderText({ 1000-length(na.omit(data$status)) })
+   mat = c(1:21)
+   for( i in c(1:21))
+        mat[i] <- 1000 - length(na.omit(data[i]))
+        mat[i]
 
 
 }
