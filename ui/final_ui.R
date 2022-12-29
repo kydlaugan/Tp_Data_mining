@@ -72,19 +72,19 @@ menu <- dashboardSidebar(
                        selectInput("dur",
                                    "Duration:",
                                    c("All",
-                                     unique(as.character(dat$duration))))
+                                     unique(as.character(data$duration))))
                 ),
                 column(4,
                        selectInput("amo",
                                    "Amount:",
                                    c("All",
-                                     unique(as.character(dat$amount))))
+                                     unique(as.character(data$amount))))
                 ),
                 column(4,
                        selectInput("ag",
                                    "Age:",
                                    c("All",
-                                     unique(as.character(dat$age))))
+                                     unique(as.character(data$age))))
                 )
               ),
             DT::dataTableOutput("table"),
