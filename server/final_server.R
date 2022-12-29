@@ -175,5 +175,61 @@ tabwhich <- setdiff(1:20, c(2,5,13))
         dat
     })) 
 
+output$table1<- DT::renderDataTable(DT::datatable({
+        tabs$status
+    })) 
+
+output$table2<- DT::renderDataTable(DT::datatable({
+        tabs$credit_history
+    })) 
+
+output$table3<- DT::renderDataTable(DT::datatable({
+        tabs$purpose
+    })) 
+
+output$table4<- DT::renderDataTable(DT::datatable({
+        tabs$savings
+    })) 
+
+output$table5<- DT::renderDataTable(DT::datatable({
+        tabs$employment_duration
+    })) 
+output$table6<- DT::renderDataTable(DT::datatable({
+        tabs$installment_rate
+    })) 
+output$table7<- DT::renderDataTable(DT::datatable({
+        tabs$personal_status_sex
+    })) 
+output$table8<- DT::renderDataTable(DT::datatable({
+        tabs$other_debtors
+    })) 
+output$table9<- DT::renderDataTable(DT::datatable({
+        tabs$present_residence
+    })) 
+output$table10<- DT::renderDataTable(DT::datatable({
+        tabs$property
+    })) 
+output$table11<- DT::renderDataTable(DT::datatable({
+        tabs$other_installment_plans
+    })) 
+output$table12<- DT::renderDataTable(DT::datatable({
+        tabs$housing
+    })) 
+output$table13<- DT::renderDataTable(DT::datatable({
+        tabs$number_credits
+    })) 
+output$table14<- DT::renderDataTable(DT::datatable({
+        tabs$job
+    })) 
+output$table15<- DT::renderDataTable(DT::datatable({
+        tabs$people_liable
+    })) 
+output$table16<- DT::renderDataTable(DT::datatable({
+        tabs$telephone
+    })) 
+output$table17<- DT::renderDataTable(DT::datatable({
+        tabs$foreign_worker
+    })) 
+
 
 }

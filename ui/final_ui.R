@@ -90,6 +90,107 @@ menu <- dashboardSidebar(
             nav(
                 "Données_nommées", 
             DT::dataTableOutput("tables"),
+            ),
+            nav(
+                "Frequences_des_attributs", 
+                fluidRow(
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table1" , height="300") ,width="500"),
+
+                    ),
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table2" , height="300") , width="500"),
+
+                    )
+                ),
+                fluidRow(
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table4" , height="300") ,width="500"),
+
+                    ),
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table5" , height="300"), width="500"),
+
+                    )
+                ),
+                fluidRow(
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table6" , height="300"),width="500"),
+
+                    ),
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table7" , height="300"),width="500"),
+
+                    )
+                ),
+                fluidRow(
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table8" , height="300"),width="500"),
+
+                    ),
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table3" , height="300"), width="500"),
+
+                    )
+                ),
+                fluidRow(
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table9" , height="300"),width="500"),
+
+                    ),
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table10" , height="300"),width="500"),
+
+                    )
+                ),
+                fluidRow(
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table11" , height="300"),width="500"),
+
+                    ),
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table12" , height="300"), width="500"),
+
+                    )
+                ),
+                fluidRow(
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table13" , height="300"),width="500"),
+
+                    ),
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table14" , height="300"),width="500"),
+
+                    )
+                ),
+                fluidRow(
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table15" , height="300"),width="500"),
+
+                    ),
+                    column(
+                        6,
+                        box(DT::dataTableOutput("table16" , height="300"), width="500"),
+
+                    )
+                ),
+           
+            box(DT::dataTableOutput("table17" , height="300")),
             )
             )
         )
