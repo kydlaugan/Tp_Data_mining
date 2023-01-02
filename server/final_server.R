@@ -27,6 +27,7 @@ server <- function(input , output){
                       "job", "people_liable", "telephone", "foreign_worker",
                       "credit_risk")
       names(dat) <- nom_colonne
+
     # Filter data based on selections
     output$table <- DT::renderDataTable(DT::datatable({
       data <- read.table("Data_set/SouthGermanCredit/SouthGermanCredit.asc", header=TRUE)
@@ -171,6 +172,7 @@ foreign_worker = round(100*prop.table(xtabs(~foreign_worker+credit_risk, dat),2)
 ## (all except 2, 5 and 13)
 tabwhich <- setdiff(1:20, c(2,5,13))
 
+
  output$tables<- DT::renderDataTable(DT::datatable({
         dat
     })) 
@@ -230,17 +232,94 @@ output$table16<- DT::renderDataTable(DT::datatable({
 output$table17<- DT::renderDataTable(DT::datatable({
         tabs$foreign_worker
     })) 
+#suppression de other-installment_plan et people_liable
+    dat <- dat[ ,-14]
+    dat <- dat[ ,-18]
 # affichage des valeurs manquantes
 Valeurs_manquantes <- is.na(data)
 output$val_na<- DT::renderDataTable(DT::datatable({
         Valeurs_manquantes
     })) 
 
+#compter le nombres de  valeurs manquantes
    output$attr1 <- renderText({ 1000-length(na.omit(data$status)) })
    mat = c(1:21)
    for( i in c(1:21))
         mat[i] <- 1000 - length(na.omit(data[i]))
         mat[i]
 
+
+#construction de l'arbre de décision 
+jeu_decision <- dat
+nbre_lignes <- floor((nrow(jeu_decision)*0.7))    
+jeu_decision <- jeu_decision[sample(nrow(jeu_decision)) ,]
+donnee_apprentissage <- jeu_decision[1:nbre_lignes , ]
+donnee_test <- jeu_decision[(nbre_lignes+1):nrow(jeu_decision) , ] 
+ 
+arbre <- rpart(credit_risk ~. , data = donnee_apprentissage)
+
+#validation du modèle
+prediction <- predict(arbre , donnee_test[,-21] , type='class')
+data.frame(donnee_test$credit_risk ,prediction)
+mc  <- table(donnee_test$credit_risk ,prediction )
+mce <- CrossTable(donnee_test$credit_risk , prediction)
+
+output$decision <- renderPlot({
+  rpart.plot(arbre)
+
+})
+
+output$confusion1 <- renderPrint({
+    mce$t
+})
+#taux de réussite 
+    somme<- ((mc[1,1] + mc[2,2])/sum(mc))*100
+output$taux_reussite <-renderText({
+    somme
+})
+
+#precision avec l'arbre de décision
+output$precision1 <- renderText({
+    mc[1,1]/(mc[1,1]+mc[2,1])
+})
+output$precision1_1 <- renderText({
+    (mc[1,1]/(mc[1,1]+mc[2,1]))*100
+})
+output$precision2 <- renderText({
+   mc[2,2]/(mc[2,2]+mc[1,2])
+})
+output$precision2_2 <- renderText({
+   (mc[2,2]/(mc[2,2]+mc[1,2]))*100
+})
+#rappel avec l'arbre de decision
+output$rappel1 <- renderText({
+    (mc[1,1]/(mc[1,1]+mc[1,2]))*100
+})
+output$rappel2 <- renderText({
+    (mc[2,2]/(mc[2,2]+mc[2,1]))*100
+})
+
+#réseau de neuronnes 
+
+
+
+  
+data <- data[ ,-14]
+data <- data[ ,-18]
+jeu_decision1 <- data
+nbre_lignes1 <- floor((nrow(jeu_decision1)*0.7))    
+jeu_decision1 <- jeu_decision1[sample(nrow(jeu_decision1)) ,]
+donnee_apprentissage1 <- jeu_decision1[1:nbre_lignes1 , ]
+donnee_test1 <- jeu_decision1[(nbre_lignes1+1):nrow(jeu_decision1) , ] 
+n1 <- neuralnet(credit_risk ~. , donnee_apprentissage1 , hidden =1)
+plot(n1)
+file.remove('image/export.png')
+dev.print(device = png, file = "image/export.png", width = 600)
+output$neuronne <- renderImage({
+  list(src = "image/export.png",
+       width = "100%",
+       height= 600)
+  
+})
 
 }

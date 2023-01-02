@@ -18,7 +18,11 @@ menu <- dashboardSidebar(
     sidebarMenu(
         menuItem("SouthGermanCredit", tabName = "SouthBank", icon = icon("building-columns" , "fa-2x")),
         menuItem("Data_set", tabName = "widgets", icon = icon("th")),
-        menuItem("Valeurs_manquantes", tabName = "NA", icon = icon("th"))
+        menuItem("Valeurs_manquantes", tabName = "NA", icon = icon("th")) , 
+        menuItem("Classification supervisée" , tabName  = "class-super" , icon = icon("th") ,
+            menuSubItem("Arbre de Décision" ,tabName = "decision"),
+            menuSubItem("Réseau de neuronnes" ,tabName = "neuronne")
+        )
 
     )
 )
@@ -199,7 +203,7 @@ menu <- dashboardSidebar(
                     )
                 ) ,
             tags$p( class="fs-3" ,"Au vu de toutes ces relations , nous pouvons conclure que nous pouvons nous passer de  l'attribut",
-              tags$strong("people_liable") ,"parceque peu importe le nombre d'individu qui depandent du débiteur , les chances qu'il soit crédible ou pas sont  quasi-égales !"
+              tags$strong("people_liable et other_installement_plans") ,"parceque peu importe le nombre d'individu qui depandent du débiteur , les chances qu'il soit crédible ou pas sont  quasi-égales !"
             )
             )
             )
@@ -214,7 +218,55 @@ menu <- dashboardSidebar(
                 
                 )
 
+        ) ,
+
+        #arbre de decision 
+        tabItem(tabName ="decision" ,
+            fluidRow(
+                column(12 , 
+                h1(class="text-center" , "Arbre de décision") ,
+                box( plotOutput("decision" , height = "800") , width =1000 ) 
+                )
+            ) ,
+
+            fluidRow(
+                column(12 ,
+                box( h2("Matrice de confusion ") ,
+                verbatimTextOutput("confusion1"),
+                p("Avec un taux de réussite de " , textOutput("taux_reussite")))
+
+                )
+            )   ,
+            fluidRow(
+                column(6 ,
+                       p("Nous avons une Precision de   " , textOutput("precision1"), "pour les mauvais Credit_risk ce qui signifie que  ", textOutput("precision1_1") ,"des cas prédits par le modèle ont effectivement été jugé comme mauvais Credit_risk")
+                ),
+                 column(6 ,
+                       p("Nous avons une Precision de   " , textOutput("precision2"), "pour les bons Credit_risk ce qui signifie que  ", textOutput("precision2_2") ,"des cas prédits par le modèle ont effectivement été jugé comme bons Credit_risk")
+                )
+            ) ,
+            fluidRow(
+                column(6 ,
+                       p("C'est donc dire que  " , textOutput("rappel1"), "des cas de mauvais crédit ont été prédit avec pecision")
+                ),
+                 column(6 ,
+                            p("C'est donc dire que  " , textOutput("rappel2"), "des cas de bons crédit ont été prédit avec precision")
+
+                )
+            )   
+
+        ),
+        #fin arbre de decision
+        tabItem(tabName ="neuronne" ,
+            fluidRow(
+                column(12 , 
+                h1(class="text-center" , "Réseau de neuronnes") ,
+                box( imageOutput("neuronne") , width =600 ,height = 600) 
+                )
+            ) ,
         )
+
+        #fin du reseau de neuronne
 
     )
  )

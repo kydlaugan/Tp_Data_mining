@@ -11,6 +11,12 @@ library(shiny)
 library(ggplot2) 
 library(shinydashboard)
 library(bslib)
+library(arules)
+library(rpart)
+library(rpart.plot)
+library(gmodels)
+library(nnet)
+library(neuralnet)
 
 #library(shiny.tailwind)
 #chargement de l'interface
