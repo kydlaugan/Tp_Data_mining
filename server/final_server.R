@@ -15,7 +15,7 @@ server <- function(input , output){
     }, deleteFile = F)
 
     #affichage des données
-    dat <- read.table("Data_set/SouthGermanCredit/SouthGermanCredit.asc", header=TRUE)
+    donnee <- read.table("Data_set/SouthGermanCredit/SouthGermanCredit.asc", header=TRUE)
       
       #renommage des colonnes
       nom_colonne <- c("status", "duration", "credit_history", "purpose", "amount", 
@@ -26,23 +26,12 @@ server <- function(input , output){
                       "housing", "number_credits",
                       "job", "people_liable", "telephone", "foreign_worker",
                       "credit_risk")
-      names(dat) <- nom_colonne
+      names(donnee) <- nom_colonne
+      data <- donnee
+      dat <- donnee
 
     # Filter data based on selections
     output$table <- DT::renderDataTable(DT::datatable({
-      data <- read.table("Data_set/SouthGermanCredit/SouthGermanCredit.asc", header=TRUE)
-      
-      #renommage des colonnes
-      nom_colonne <- c("status", "duration", "credit_history", "purpose", "amount", 
-                      "savings", "employment_duration", "installment_rate",
-                      "personal_status_sex", "other_debtors",
-                      "present_residence", "property",
-                      "age", "other_installment_plans",
-                      "housing", "number_credits",
-                      "job", "people_liable", "telephone", "foreign_worker",
-                      "credit_risk")
-      names(data) <- nom_colonne
-      
       if (input$dur != "All") {
         data <- data[data$duration == input$dur,]
       }
@@ -233,8 +222,10 @@ output$table17<- DT::renderDataTable(DT::datatable({
         tabs$foreign_worker
     })) 
 #suppression de other-installment_plan et people_liable
-    dat <- dat[ ,-14]
-    dat <- dat[ ,-18]
+dat[ ,-14]
+dat[ ,-18]
+data[ ,-14]
+data[ ,-18]
 # affichage des valeurs manquantes
 Valeurs_manquantes <- is.na(data)
 output$val_na<- DT::renderDataTable(DT::datatable({
@@ -299,27 +290,67 @@ output$rappel2 <- renderText({
     (mc[2,2]/(mc[2,2]+mc[2,1]))*100
 })
 
-#réseau de neuronnes 
+#réseau de neuronnes  
+#levels(data$credit_risk) <- c("bad", "good")
+#jeu_decision1 <- data
+#nbre_lignes1 <- floor((nrow(jeu_decision1)*0.7))    
+#jeu_decision1 <- jeu_decision1[sample(nrow(jeu_decision1)) ,]
+#donnee_apprentissage1 <- jeu_decision1[1:nbre_lignes1 , ]
+#donnee_test1 <- jeu_decision1[(nbre_lignes1+1):nrow(jeu_decision1) , ] 
+#n1 <- neuralnet(credit_risk ~. , donnee_apprentissage1 , hidden =3)
+#plot(n1)
 
 
+#mypredict <- compute(n1, donnee_test1[,-21])$net.result
+#maxidx <- function(arr) { return(which(arr == max(arr))) } 
+#idx <- apply(mypredict, c(2), maxidx)
+#prediction1 <- c('good','bad')[idx] 
+#table(prediction1, donnee_test1$credit_risk)
+#mce1 <- CrossTable(donnee_test1$credit_risk , prediction1)
 
-  
-data <- data[ ,-14]
-data <- data[ ,-18]
-jeu_decision1 <- data
-nbre_lignes1 <- floor((nrow(jeu_decision1)*0.7))    
-jeu_decision1 <- jeu_decision1[sample(nrow(jeu_decision1)) ,]
-donnee_apprentissage1 <- jeu_decision1[1:nbre_lignes1 , ]
-donnee_test1 <- jeu_decision1[(nbre_lignes1+1):nrow(jeu_decision1) , ] 
-n1 <- neuralnet(credit_risk ~. , donnee_apprentissage1 , hidden =1)
-plot(n1)
+
+# Random sampling
+samplesize = 0.70 * nrow(data)
+set.seed(80)
+index = sample( seq_len ( nrow ( data ) ), size = samplesize )
+
+# Create training and test set
+datatrain = data[ index, ]
+datatest = data[ -index, ]
+
+## Scale data for neural network
+
+max = apply(data , 2 , max)
+min = apply(data, 2 , min)
+scaled = as.data.frame(scale(data, center = min, scale = max - min))
+# creating training and test set
+trainNN = scaled[index , ]
+testNN = scaled[-index , ]
+
+# fit neural network
+set.seed(2)
+NN = neuralnet(credit_risk ~ status + duration + credit_history + purpose + amount +
+                       savings + employment_duration + installment_rate +
+                       personal_status_sex + other_debtors +
+                       present_residence + property +
+                       age + other_installment_plans +
+                       housing + number_credits +
+                       job + people_liable + telephone + foreign_worker , trainNN ,hidden = 3 , linear.output = T )
+plot(NN)
+
 file.remove('image/export.png')
-dev.print(device = png, file = "image/export.png", width = 600)
+dev.print(device = png, file = "image/export.png", width = 600,height = 900)
 output$neuronne <- renderImage({
   list(src = "image/export.png",
-       width = "100%",
-       height= 600)
-  
+       width = 600,
+       height= 900)
 })
+
+predict_testNN = compute(NN, testNN[,c(1:21)])
+predict_testNN = (predict_testNN$net.result * (max(data$credit_risk) - min(data$credit_risk))) + min(data$credit_risk)
+#print(table(predict_testNN, testNN$credit_risk ))
+
+
+
 
 }

@@ -261,7 +261,7 @@ menu <- dashboardSidebar(
             fluidRow(
                 column(12 , 
                 h1(class="text-center" , "Réseau de neuronnes") ,
-                box( imageOutput("neuronne") , width =600 ,height = 600) 
+                box(imageOutput("neuronne"), width=600 , height=900 )
                 )
             ) ,
         )
