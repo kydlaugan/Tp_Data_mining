@@ -239,6 +239,19 @@ output$val_na<- DT::renderDataTable(DT::datatable({
         mat[i] <- 1000 - length(na.omit(data[i]))
         mat[i]
 
+#Analyse descriptive
+output$hist <- renderPlot({
+    plot(hist(data[[input$features]]),xlab=input$features,ylab=input$features)
+    })
+    output$dis <- renderPlot({
+      boxplot(data[[input$feature]])
+    })
+    output$donne <- renderPrint({
+      summary(data)
+      
+    })
+    output$jeu <- renderDataTable(dat)
+      
 
 #construction de l'arbre de décision 
 jeu_decision <- dat

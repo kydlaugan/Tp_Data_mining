@@ -19,6 +19,11 @@ menu <- dashboardSidebar(
         menuItem("SouthGermanCredit", tabName = "SouthBank", icon = icon("building-columns" , "fa-2x")),
         menuItem("Data_set", tabName = "widgets", icon = icon("th")),
         menuItem("Valeurs_manquantes", tabName = "NA", icon = icon("th")) , 
+        menuItem("Analyse descriptive", tabName = "Analyse descriptive", icon = icon("dashboard"),
+               menuSubItem("Histogrammes des attributs",tabName = "hist"),
+               menuSubItem("Summary",tabName = "sum"),
+               menuSubItem("Distribution",tabName = "dis")
+               ),
         menuItem("Classification supervisée" , tabName  = "class-super" , icon = icon("th") ,
             menuSubItem("Arbre de Décision" ,tabName = "decision"),
             menuSubItem("Réseau de neuronnes" ,tabName = "neuronne")
@@ -219,6 +224,23 @@ menu <- dashboardSidebar(
                 )
 
         ) ,
+
+        #Analyse descriptive
+      tabItem("Analyse descriptive",h1("Analyse statistique")),
+      tabItem("hist",h1("Histogrammes des attributs"),
+              box(selectInput("features","Histogrammes des variables:",nom_colonne,width = 300),width = 4),
+              box(plotOutput("hist") )
+      ),
+      tabItem("sum",h1(" Vue sommaire des onnées "),
+        p(strong("Chaque Attribut est representé respectivement par son minimum , son premier quartile, la médiane la moyenne ,le troisieme quartile ,et le maximum  "), .noWS = NULL, .renderHook = NULL),
+        verbatimTextOutput("donne")
+      ),
+      tabItem("dis",h1("Boite a moustache de chaque attribut"),
+              box(selectInput("feature","Boite a moustache:",nom_colonne,width = 300),width = 4),
+              box(plotOutput("dis") ),
+              strong("Les deux traits horizontaux de la boite sont le 1er et le 3e quartiles de l'attribut choisi"),
+              strong("Le trait fort est la médiane de l'attribut choisi ")
+      ) ,
 
         #arbre de decision 
         tabItem(tabName ="decision" ,
