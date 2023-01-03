@@ -49,6 +49,7 @@ server <- function(input , output){
          dat[[i]] <- factor(dat[[i]])
     
     dat[[4]] <- factor(dat[[4]], levels=as.character(0:10))
+
     
     levels(dat$credit_risk) <- c("bad", "good")
     levels(dat$status) = c("no checking account",
@@ -226,18 +227,18 @@ dat[ ,-14]
 dat[ ,-18]
 data[ ,-14]
 data[ ,-18]
+data <- select(data,-c(people_liable,other_installment_plans))
+
 # affichage des valeurs manquantes
+
+output$manq <- renderText({
+  #compter le nombres de  valeurs manquantes
+   nrow(data[!complete.cases(data),])
+})
 Valeurs_manquantes <- is.na(data)
 output$val_na<- DT::renderDataTable(DT::datatable({
         Valeurs_manquantes
     })) 
-
-#compter le nombres de  valeurs manquantes
-   output$attr1 <- renderText({ 1000-length(na.omit(data$status)) })
-   mat = c(1:21)
-   for( i in c(1:21))
-        mat[i] <- 1000 - length(na.omit(data[i]))
-        mat[i]
 
 #Analyse descriptive
 output$hist <- renderPlot({
@@ -251,8 +252,20 @@ output$hist <- renderPlot({
       
     })
     output$jeu <- renderDataTable(dat)
-      
 
+#Extraction des regles
+rulesdata <- donnee
+rulesdata <- select(donnee,-c(people_liable,other_installment_plans))
+rules = apriori(data= rulesdata[, -19], parameter = list(support = 0.6,
+                                                        confidence = 0.8))
+
+trans <- as(rulesdata[,-19], "transactions")
+dim(trans)
+itemLabels(trans)
+summary(trans)
+output$regles <- renderPlot({
+     itemFrequencyPlot(trans, topN=5,  cex.names=1)
+})
 #construction de l'arbre de décision 
 jeu_decision <- dat
 nbre_lignes <- floor((nrow(jeu_decision)*0.7))    
@@ -339,16 +352,16 @@ scaled = as.data.frame(scale(data, center = min, scale = max - min))
 # creating training and test set
 trainNN = scaled[index , ]
 testNN = scaled[-index , ]
-
+levels(trainNN$credit_risk) <- c("bad", "good")
 # fit neural network
 set.seed(2)
 NN = neuralnet(credit_risk ~ status + duration + credit_history + purpose + amount +
                        savings + employment_duration + installment_rate +
                        personal_status_sex + other_debtors +
                        present_residence + property +
-                       age + other_installment_plans +
+                       age +
                        housing + number_credits +
-                       job + people_liable + telephone + foreign_worker , trainNN ,hidden = 3 , linear.output = T )
+                       job + telephone + foreign_worker , trainNN ,hidden = 3 , linear.output = T )
 plot(NN)
 
 file.remove('image/export.png')
@@ -359,11 +372,50 @@ output$neuronne <- renderImage({
        height= 900)
 })
 
-predict_testNN = compute(NN, testNN[,c(1:21)])
-predict_testNN = (predict_testNN$net.result * (max(data$credit_risk) - min(data$credit_risk))) + min(data$credit_risk)
-#print(table(predict_testNN, testNN$credit_risk ))
+
+#methode svm
+donnee_svm <- donnee
+for (j in setdiff(1:21, c(2,4,5,13)))
+         donnee_svm[[j]] <- factor(donnee_svm[[j]])
+    
+donnee_svm[[4]] <- factor(donnee_svm[[4]], levels=as.character(0:10))    
+levels(donnee_svm$credit_risk) <- c("bad", "good")
+mymodel <- svm(credit_risk~. , donnee_svm)
+summary(mymodel)
+pred <- predict(mymodel , donnee_svm)
+tab <- table(Predicted=pred , Actual = donnee_svm$credit_risk)
+tabcros <- CrossTable(pred , donnee_svm$credit_risk)
 
 
+output$confusion2 <- renderPrint({
+    tabcros$t
+})
+#taux de réussite 
+    somme2 <- ((tab[1,1] + tab[2,2])/sum(tab))*100
+output$taux_reussite2 <-renderText({
+    somme2
+})
+
+#precision avec l'arbre de décision
+output$precision3 <- renderText({
+    tab[1,1]/(tab[1,1]+tab[2,1])
+})
+output$precision3_3 <- renderText({
+    (tab[1,1]/(tab[1,1]+tab[2,1]))*100
+})
+output$precision4 <- renderText({
+   tab[2,2]/(tab[2,2]+tab[1,2])
+})
+output$precision4_4 <- renderText({
+   (tab[2,2]/(tab[2,2]+tab[1,2]))*100
+})
+#rappel avec l'arbre de decision
+output$rappel3 <- renderText({
+    (tab[1,1]/(tab[1,1]+tab[1,2]))*100
+})
+output$rappel4 <- renderText({
+    (tab[2,2]/(tab[2,2]+tab[2,1]))*100
+})
 
 
 }

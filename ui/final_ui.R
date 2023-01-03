@@ -24,9 +24,12 @@ menu <- dashboardSidebar(
                menuSubItem("Summary",tabName = "sum"),
                menuSubItem("Distribution",tabName = "dis")
                ),
+        menuItem("Extraction des règles", tabName = "regles", icon = icon("th")) , 
         menuItem("Classification supervisée" , tabName  = "class-super" , icon = icon("th") ,
             menuSubItem("Arbre de Décision" ,tabName = "decision"),
-            menuSubItem("Réseau de neuronnes" ,tabName = "neuronne")
+            menuSubItem("Réseau de neuronnes" ,tabName = "neuronne") ,
+            menuSubItem("svm" ,tabName = "svm")
+
         )
 
     )
@@ -218,7 +221,7 @@ menu <- dashboardSidebar(
             card(
                  DT::dataTableOutput("val_na") 
             ),
-                tags$p("Nous relevons de ce tableau qu'il y a" , 
+                tags$p("Nous relevons de ce tableau qu'il y a" , textOutput("manq") ,
                  tags$strong("aucune valeurs maquantes donc 0 N/A")
                 
                 )
@@ -241,7 +244,16 @@ menu <- dashboardSidebar(
               strong("Les deux traits horizontaux de la boite sont le 1er et le 3e quartiles de l'attribut choisi"),
               strong("Le trait fort est la médiane de l'attribut choisi ")
       ) ,
-
+       #extraction des regles
+       tabItem("regles",
+               fluidRow(
+                    column(12,
+                           h1(class="text-center" , "Diagramme des frequences") ,
+                           box( plotOutput("regles" , height = "800") , width = 1000)
+                    )
+               )
+               
+       ),
         #arbre de decision 
         tabItem(tabName ="decision" ,
             fluidRow(
@@ -285,10 +297,41 @@ menu <- dashboardSidebar(
                 h1(class="text-center" , "Réseau de neuronnes") ,
                 box(imageOutput("neuronne"), width=600 , height=900 )
                 )
-            ) ,
-        )
+            ) 
+             
+        ) ,
 
         #fin du reseau de neuronne
+        #debut svm
+        tabItem("svm",
+                fluidRow(
+                column(12 ,
+                box( h2("Matrice de confusion ") ,
+                verbatimTextOutput("confusion2"),
+                p("Avec un taux de réussite de " , textOutput("taux_reussite2")))
+
+                )
+            )   ,
+            fluidRow(
+                column(6 ,
+                       p("Nous avons une Precision de   " , textOutput("precision3"), "pour les mauvais Credit_risk ce qui signifie que  ", textOutput("precision3_3") ,"des cas prédits par le modèle ont effectivement été jugé comme mauvais Credit_risk")
+                ),
+                 column(6 ,
+                       p("Nous avons une Precision de   " , textOutput("precision4"), "pour les bons Credit_risk ce qui signifie que  ", textOutput("precision4_4") ,"des cas prédits par le modèle ont effectivement été jugé comme bons Credit_risk")
+                )
+            ) ,
+            fluidRow(
+                column(6 ,
+                       p("C'est donc dire que  " , textOutput("rappel3"), "des cas de mauvais crédit ont été prédit avec pecision")
+                ),
+                 column(6 ,
+                            p("C'est donc dire que  " , textOutput("rappel4"), "des cas de bons crédit ont été prédit avec precision")
+
+                )
+            )   
+
+        )
+        #fin svm
 
     )
  )
