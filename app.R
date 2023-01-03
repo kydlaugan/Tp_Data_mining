@@ -19,6 +19,8 @@ library(gmodels)
 library(nnet)
 library(neuralnet)
 library(e1071)
+library(gridExtra)
+library(class)
 #library(shiny.tailwind)
 #chargement de l'interface
 source("ui/final_ui.R")  

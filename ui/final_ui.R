@@ -28,6 +28,7 @@ menu <- dashboardSidebar(
         menuItem("Classification supervisée" , tabName  = "class-super" , icon = icon("th") ,
             menuSubItem("Arbre de Décision" ,tabName = "decision"),
             menuSubItem("Réseau de neuronnes" ,tabName = "neuronne") ,
+            menuSubItem("k plus proches voisins",tabName = "kppv") ,
             menuSubItem("svm" ,tabName = "svm")
 
         )
@@ -302,6 +303,15 @@ menu <- dashboardSidebar(
         ) ,
 
         #fin du reseau de neuronne
+      
+        # debut knn
+      tabItem("kppv",h1("Methode de K plus proches voisins"),
+              box(selectInput("feature"," Entree 1 ",nom_colonne,width = 300),width = 4),
+              box(selectInput("fit"," Entree 2 ",nom_colonne,width = 300),width = 4),
+              box(plotOutput("kppv") )
+      ),
+      
+        #fin knn
         #debut svm
         tabItem("svm",
                 fluidRow(

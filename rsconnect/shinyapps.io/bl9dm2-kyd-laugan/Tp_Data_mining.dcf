@@ -5,9 +5,9 @@ account: bl9dm2-kyd-laugan
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7955589
-bundleId: 6681993
+bundleId: 6691540
 url: https://bl9dm2-kyd-laugan.shinyapps.io/Tp_Data_mining/
-when: 1672341268.33834
-lastSyncTime: 1672341268.33838
+when: 1672714442.03761
+lastSyncTime: 1672714442.03767
 asMultiple: FALSE
 asStatic: FALSE

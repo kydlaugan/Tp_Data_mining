@@ -366,12 +366,52 @@ plot(NN)
 
 file.remove('image/export.png')
 dev.print(device = png, file = "image/export.png", width = 600,height = 900)
+#png(file = "out.png", width = 600, height = 900)
+#plot(NN)
+#dev.off()
 output$neuronne <- renderImage({
   list(src = "image/export.png",
        width = 600,
        height= 900)
 })
 
+# debut knn
+datakppv <- donnee
+set.seed(9850)
+#on divise les données en donnees d'entrainement et de test
+nt = sample(1:nrow(datakppv),0.7*nrow(datakppv))
+data_train = datakppv[nt,1:20]
+data_test = datakppv[-nt,1:20]
+data_train_target = datakppv[nt,21] 
+data_train_test = datakppv[-nt,21]
+proche = knn(train = data_train , 
+             test = data_test ,
+             cl=data_train_target , 
+             k=round(sqrt(nrow(datakppv))))
+plot_predictions = data.frame( data_test$status, 
+                               data_test$duration, data_test$credit_history, data_test$purpose, data_test$amount, 
+                               data_test$savings, data_test$employment_duration, data_test$installment_rate,
+                               data_test$personal_status_sex, data_test$other_debtors,
+                               data_test$present_residence, data_test$property,
+                               data_test$age, data_test$other_installment_plans,
+                               data_test$housing, data_test$number_credits,
+                               data_test$job, data_test$people_liable, data_test$telephone, data_test$foreign_worker,
+                               predicted=proche )
+colnames(plot_predictions) <- c("status", "duration", "credit_history", "purpose", "amount", 
+                                "savings", "employment_duration", "installment_rate",
+                                "personal_status_sex", "other_debtors",
+                                "present_residence", "property",
+                                "age", "other_installment_plans",
+                                "housing", "number_credits",
+                                "job", "people_liable", "telephone", "foreign_worker",
+                                "predicted")
+output$kppv <- renderPlot({
+  plot(ggplot(plot_predictions, aes(duration,status,color=predicted,fill=predicted)) +
+         geom_point(size=3)+
+         ggtitle("Relations des predictions entre les deux variables choisies ")+
+         theme(plot.title=element_text(hjust=0.5))+
+         theme(legend.position="none"))
+})
 
 #methode svm
 donnee_svm <- donnee
