@@ -19,6 +19,30 @@ nom_colonne <- c("status", "duration", "credit_history", "purpose", "amount",
                  "job", "people_liable", "telephone", "foreign_worker",
                  "credit_risk")
 names(dat) <- nom_colonne
+set.seed(9850)
+str(dat)
+#on divise les données en donnees d'entrainement et de test
+nt = sample(1:nrow(dat),nrow(dat))
+data_train = dat[nt,1:20]
+data_test = dat[-nt,1:20]
+data_train_target = dat[nt,21] 
+data_train_test = dat[-nt,21]
+library(class)
+proche = knn(train = data_train , 
+             test = data_test ,
+             cl=data_train_target , 
+             k=round(sqrt(nrow(dat))))
+plot_predictions = data.frame( data_test$status, 
+                               data_test$duration, data_test$credit_history, data_test$purpose, data_test$amount, 
+                               data_test$savings, data_test$employment_duration, data_test$installment_rate,
+                               data_test$personal_status_sex, data_test$other_debtors,
+                               data_test$present_residence, data_test$property,
+                               data_test$age, data_test$other_installment_plans,
+                               data_test$housing, data_test$number_credits,
+                               data_test$job, data_test$people_liable, data_test$telephone, data_test$foreign_worker,
+                              predicted=proche )
+library(ggplot2)
+library(gridExtra)
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
   dashboardHeader(title = " INF 3115 PROJET "),
@@ -27,7 +51,8 @@ ui <- dashboardPage(
       menuItem("Analyse descriptive", tabName = "Analyse descriptive", icon = icon("dashboard"),
                menuSubItem("Histogrammes des attributs",tabName = "hist"),
                menuSubItem("Summary",tabName = "sum"),
-               menuSubItem("Distribution",tabName = "dis")
+               menuSubItem("Distribution",tabName = "dis"),
+               menuSubItem("knn",tabName = "kppv")
                )
     )
   ),
@@ -48,11 +73,17 @@ ui <- dashboardPage(
               strong("Les deux traits horizontaux de la boite
 sont le 1er et le 3e quartiles de l'attribut choisi"),
               strong("Le trait fort est la médiane de l'attribut choisi ")
-      )
+      ),
+        tabItem("kppv",h1("Methode de K plus proches voisins"),
+                h2("Relations etre les prédictions de"+dat[[input$feature]]+"et"+dat[[input$feature]]),
+                box(selectInput("features"," "+dat[[input$feature]]+" ",nom_colonne,width = 300),width = 4),
+                box(selectInput("features"," "+dat[[input$feature]]+" ",nom_colonne,width = 300),width = 4),
+                box(plotOutput("kppv") )
+        )
   )  
 ))
 
-# Define server logic required to draw a histogram
+
 server <- function(input, output) {
 
     output$hist <- renderPlot({
@@ -66,6 +97,17 @@ server <- function(input, output) {
       
     })
     output$jeu <- renderDataTable(dat)
+    output$kppv <- renderPrint({
+      ggplot2(plot_predictions, aes(dat[[input$features]],
+                                        dat[[input$features]],
+                                        color = predicted,
+                                        fill = predicted) +
+                    geom_point(size=3)+
+                    geom_text(aes(label = test_labels),hjust=1,vjust=2) +
+                    ggtitle("Relations etre les prédictions de"+data_test$status+"et"+data_test$status)+
+                    theme(plot.title=element_text(hjust=0.5))+
+                    theme(legend.position="none"))
+    })
       
 }
 
